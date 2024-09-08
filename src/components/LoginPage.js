@@ -24,7 +24,7 @@ const LoginPage = ({ onLogin }) => {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        height: '100vh',
+        height: '70vh',
         padding: 3,
       }}
     >
@@ -34,17 +34,18 @@ const LoginPage = ({ onLogin }) => {
       <TextField
         label="Usuário"
         margin="normal"
-        fullWidth
         value={username}
         onChange={(e) => setUsername(e.target.value)}
+        style={{width: '55%'}}
       />
       <TextField
         label="Senha"
         type="password"
         margin="normal"
-        fullWidth
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        fullWidth
+        style={{width: '55%'}}
       />
       <Button variant="contained" color="primary" onClick={handleLogin}>
         Entrar
