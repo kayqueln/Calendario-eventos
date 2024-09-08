@@ -12,7 +12,6 @@ import {
 import { confirmPresence } from '../api';
 import { toast } from 'react-toastify';
 
-
 const ConfirmPresenceForm = ({ event, open, onClose }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -21,19 +20,30 @@ const ConfirmPresenceForm = ({ event, open, onClose }) => {
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      await confirmPresence(event._id, name, email);
-      toast.success('Presença confirmada com sucesso!', {
-        position: "top-right",    
-        autoClose: 3000,         
-        hideProgressBar: false,  
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });      
+      await confirmPresence(event._id, name, email);      
+      toast.success(
+        <>
+          Presença confirmada com sucesso! <br />
+          Por favor, verifique seu e-mail.
+        </>, 
+        {
+          position: "top-right",
+          autoClose: 6500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        }
+      );
+           
       onClose();
     } catch (error) {
-      toast.error('Erro ao confirmar presença.');  
+      if(error instanceof Error){
+        toast.error(error.message);  
+      }else{
+        toast.error('Ocorreu um erro ao confirmar sua presença.')
+      }
     } finally {
       setLoading(false);
     }

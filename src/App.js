@@ -66,7 +66,7 @@ function App() {
       </AppBar>
 
       <Container>
-        <ToastContainer />
+        <ToastContainer style={{width: '450px'}}/>
         <AppRoutes
           events={events}
           selectedEvent={selectedEvent}

@@ -15,10 +15,12 @@ export const obterEventos = async () => {
 
 export const confirmPresence = async (eventId, nome, email) => {
   try {
-    await axios.post(`${API_URL}/api/presenca/${eventId}/confirmar`, { nome, email });
+    const response = await axios.post(`${API_URL}/api/presenca/${eventId}/confirmar`, { nome, email });
+    console.log(response.data)
+    return response.data;
   } catch (error) {
-    console.error("Erro ao confirmar presença:", error);
-    throw error;
+    console.error(error.response.data.message);
+    throw new Error(error.response.data.message);
   }
 };
 
