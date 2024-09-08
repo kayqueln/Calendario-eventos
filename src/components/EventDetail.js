@@ -14,14 +14,24 @@ const EventDetail = ({ event, onClick }) => {
         <Typography gutterBottom variant="h5" component="div">
           {event.titulo}
         </Typography>
-        
-        <Typography variant="body2" color="text.secondary">
-          Data: {new Date(event.data).toLocaleDateString()}
-        </Typography>
 
         <Typography variant="body2" color="text.secondary" sx={{ marginTop: 1 }}>
           {event.descricao}
         </Typography>
+        
+        <Typography sx={{ marginTop: 1 }} variant="body2" color="text.secondary">
+          Data: {new Date(event.data).toLocaleDateString()}
+        </Typography>
+
+        <Box sx={{display: 'flex', gap: 0.5}}>
+          <Typography variant="body2" color="text.secondary">
+            Horário: {event.horaInicio}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            às {event.horaTermino}
+          </Typography>
+        </Box>
+        
 
         <Box sx={{ marginTop: 1 }}>
           <Typography variant="body2" color="text.secondary">

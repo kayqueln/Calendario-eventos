@@ -10,6 +10,8 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { confirmPresence } from '../api';
+import { toast } from 'react-toastify';
+
 
 const ConfirmPresenceForm = ({ event, open, onClose }) => {
   const [name, setName] = useState('');
@@ -20,10 +22,18 @@ const ConfirmPresenceForm = ({ event, open, onClose }) => {
     try {
       setLoading(true);
       await confirmPresence(event._id, name, email);
-      alert('Presença confirmada!');
+      toast.success('Presença confirmada com sucesso!', {
+        position: "top-right",    
+        autoClose: 3000,         
+        hideProgressBar: false,  
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });      
       onClose();
     } catch (error) {
-      alert('Erro ao confirmar presença.');
+      toast.error('Erro ao confirmar presença.');  
     } finally {
       setLoading(false);
     }

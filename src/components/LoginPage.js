@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const LoginPage = ({ onLogin }) => {
   const [username, setUsername] = useState('');
@@ -13,7 +14,7 @@ const LoginPage = ({ onLogin }) => {
       onLogin();
       navigate('/admin')
     } else {
-      alert('Usuário ou senha inválidos');
+      toast.error('Usuário ou senha inválidos');
     }
   };
 

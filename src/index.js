@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 
-// Configura o tema Material UI
 const theme = createTheme({
   palette: {
     primary: {

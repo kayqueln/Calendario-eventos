@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const API_URL = 'https://4ybvpsl4m0.execute-api.us-east-1.amazonaws.com'; 
 
-export const fetchEvents = async () => {
+export const obterEventos = async () => {
   try {
     const response = await axios.get(`${API_URL}/api/eventos`);
     console.log(response.data)
@@ -39,9 +39,9 @@ export const uploadBanner = async ( file , title ) => {
 };
 
 
-export const cadastrarEvento = async (data, titulo, descricao, vagas, bannerUrl) => {
+export const cadastrarEvento = async (data, horaInicio, horaTermino, titulo, descricao, vagas, bannerUrl) => {
   try {
-    await axios.post(`${API_URL}/api/eventos`, { data, titulo, descricao, vagas, bannerUrl });
+    await axios.post(`${API_URL}/api/eventos`, { data, horaInicio, horaTermino, titulo, descricao, vagas, bannerUrl });
   } catch (error) {
     console.error("Erro ao fazer upload do banner:", error);
     throw error;
@@ -57,9 +57,9 @@ export const excluirEvento = async (idEvento) => {
   }
 };
 
-export const alterarEvento = async (data, titulo, descricao, vagas, bannerUrl, idEvento) => {
+export const alterarEvento = async (data, horaInicio, horaTermino, titulo, descricao, vagas, bannerUrl, idEvento) => {
   try {
-    await axios.put(`${API_URL}/api/eventos/${idEvento}`, { data, titulo, descricao, vagas, bannerUrl });
+    await axios.put(`${API_URL}/api/eventos/${idEvento}`, { data, horaInicio, horaTermino, titulo, descricao, vagas, bannerUrl });
   } catch (error) {
     console.error("Erro ao fazer upload do banner:", error);
     throw error;

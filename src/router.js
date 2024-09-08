@@ -32,13 +32,13 @@ const AppRoutes = ({ events, selectedEvent, onCardClick, onClose, open, isAuthen
       />
       <Route
         path="/login"
-        element={<LoginPage onLogin={onLogin} />}
+        element={<LoginPage onLogin={ onLogin } />}
       />
       <Route
         path="/admin"
         element={
           isAuthenticated ? (
-            <AdminPage events={events} />
+            <AdminPage events={events} onLogin={onLogin} />
           ) : (
             <Navigate to="/login" />
           )

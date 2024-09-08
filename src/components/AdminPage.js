@@ -26,19 +26,25 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import PeopleIcon from '@mui/icons-material/People';
 import { cadastrarEvento, uploadBanner, excluirEvento, alterarEvento } from '../api'; 
+import { toast } from 'react-toastify';
 
-const AdminPage = ({ events, onLogout }) => {
+
+const AdminPage = ({ events }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [openDialogParticipantes, setOpenDialogParticipantes] = useState(false);
   const [title, setTitle] = useState('');
   const [date, setDate] = useState('');
+  const [horarioInicio, setHorarioInicio] = useState(''); 
+  const [horarioTermino, setHorarioTermino] = useState(''); 
   const [description, setDescription] = useState('');
   const [spots, setSpots] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [editingEvent, setEditingEvent] = useState(null); 
+  const [editingEvent, setEditingEvent] = useState(null);
+
 
   const handleClickOpen = () => {
     setOpenDialog(true);
@@ -52,9 +58,18 @@ const AdminPage = ({ events, onLogout }) => {
 
   const handleUploadImage = async () => {
     if (!imageFile) {
-        alert('Por favor, selecione uma imagem.');
+        toast.warning('Por favor, selecione uma imagem.', {
+          position: "top-right",    
+          autoClose: 3000,         
+          hideProgressBar: false,  
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });    
         return;
     }
+    handleClose();
 
     const formData = new FormData();
     formData.append('file', imageFile);
@@ -68,26 +83,44 @@ const AdminPage = ({ events, onLogout }) => {
 
   const handleSubmit = async () => {
     try {
-        if (!title || !date || !description || !spots) {
-          alert('Por favor, preencha todos os campos.');
+        if (!title || !date || !description || !spots || !horarioInicio || !horarioTermino) {
+          toast.warning('Por favor, preencha todos os campos.', {
+            position: "top-right",    
+            autoClose: 3000,         
+            hideProgressBar: false,  
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          }); 
           return;
         }
 
         setUploading(true);
-        handleClose();
         const bannerUrl = await handleUploadImage();
+        if(!bannerUrl){
+          return;
+        }
 
         if (editingEvent) {
-            await alterarEvento(date, title, description, parseInt(spots, 10), bannerUrl, editingEvent._id);
+            await alterarEvento(date, horarioInicio, horarioTermino, title, description, parseInt(spots, 10), bannerUrl, editingEvent._id);
         } else {
-            await cadastrarEvento(date, title, description, parseInt(spots, 10), bannerUrl);
+            await cadastrarEvento(date, horarioInicio, horarioTermino, title, description, parseInt(spots, 10), bannerUrl);
         }
         
         handleClose();
         window.location.reload(); 
     } catch (error) {
       console.error('Erro ao cadastrar evento:', error);
-      alert('Erro ao cadastrar evento.');
+      toast.error('Erro ao cadastrar evento.', {
+        position: "top-right",    
+        autoClose: 3000,         
+        hideProgressBar: false,  
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      }); 
     } finally {
       setUploading(false);
     }
@@ -97,6 +130,8 @@ const AdminPage = ({ events, onLogout }) => {
     setEditingEvent(event);
     setTitle(event.titulo);
     setDate(event.data);
+    setHorarioInicio(event.horaInicio);
+    setHorarioTermino(event.horaTermino);
     setDescription(event.descricao);
     setSpots(event.vagas);
     setImageFile(null); 
@@ -110,7 +145,15 @@ const AdminPage = ({ events, onLogout }) => {
         window.location.reload(); 
       } catch (error) { 
         console.error('Erro ao excluir evento:', error);
-        alert('Erro ao excluir evento.');
+        toast.error('Erro ao excluir evento', {
+          position: "top-right",    
+          autoClose: 3000,         
+          hideProgressBar: false,  
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }); 
       }
     }
   };
@@ -120,6 +163,8 @@ const AdminPage = ({ events, onLogout }) => {
     setDate('');
     setDescription('');
     setSpots('');
+    setHorarioInicio('');
+    setHorarioTermino('');
     setImageFile(null);
     setEditingEvent(null); 
   };
@@ -171,11 +216,13 @@ const AdminPage = ({ events, onLogout }) => {
             <TableRow>
               <TableCell>Título</TableCell>
               <TableCell>Data</TableCell>
+              <TableCell>Início</TableCell>
+              <TableCell>Término</TableCell>
               <TableCell>Descrição</TableCell>
               <TableCell>Vagas</TableCell>
-              <TableCell>Participantes</TableCell>
-              <TableCell>Editar</TableCell>
-              <TableCell>Excluir</TableCell>
+              <TableCell style={{ textAlign: 'center' }}>Participantes</TableCell>
+              <TableCell style={{ textAlign: 'center' }}>Editar</TableCell>
+              <TableCell style={{ textAlign: 'center' }}>Excluir</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -183,21 +230,28 @@ const AdminPage = ({ events, onLogout }) => {
               <TableRow key={event._id}>
                 <TableCell>{event.titulo}</TableCell>
                 <TableCell>{event.data}</TableCell>
+                <TableCell>{event.horaInicio}</TableCell>
+                <TableCell>{event.horaTermino}</TableCell>
                 <TableCell>{event.descricao}</TableCell>
                 <TableCell>{event.vagas}</TableCell>
-                <TableCell>
-                  <Button variant="contained" onClick={() => handleOpenParticipants(event)}>
-                    Ver Participantes
-                  </Button>
+
+                <TableCell style={{ textAlign: 'center' }}>
+                  <Tooltip title="Participantes">
+                    <IconButton color="primary" onClick={() => handleOpenParticipants(event)}>
+                      <PeopleIcon />
+                    </IconButton>
+                  </Tooltip>
                 </TableCell>
-                <TableCell>
+                
+                <TableCell style={{ textAlign: 'center' }}>
                   <Tooltip title="Editar">
                     <IconButton color="primary" onClick={() => handleEdit(event)}>
                       <EditIcon />
                     </IconButton>
                   </Tooltip>
                 </TableCell>
-                <TableCell>
+
+                <TableCell style={{ textAlign: 'center' }}>
                   <Tooltip title="Excluir">
                     <IconButton color="error" onClick={() => handleDelete(event._id)}>
                       <DeleteIcon />
@@ -260,6 +314,24 @@ const AdminPage = ({ events, onLogout }) => {
             InputLabelProps={{ shrink: true }}
             value={date}
             onChange={(e) => setDate(e.target.value)}
+          />
+          <TextField
+            margin="dense"
+            label="Horário de ínicio"
+            type="time"
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            value={horarioInicio}
+            onChange={(e) => setHorarioInicio(e.target.value)}
+          />
+          <TextField
+            margin="dense"
+            label="Horário de término"
+            type="time"
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            value={horarioTermino}
+            onChange={(e) => setHorarioTermino(e.target.value)}
           />
           <TextField
             margin="dense"
